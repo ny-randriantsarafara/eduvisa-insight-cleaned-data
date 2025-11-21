@@ -1,5 +1,24 @@
-/out
-venv/
-.env
+# Python cache & virtual environment
 __pycache__/
 *.pyc
+venv/
+
+# Environment variables
+.env*
+
+# VSCode specific
+.vscode/
+
+# Data files
+# Ignore all data by default...
+data/
+
+# ...but re-include the critical files that are manually edited during the pipeline.
+!data/interim/fields-to-keep.json
+!data/interim/field-normalization-map.json
+
+# Backup files
+*.bak
+
+# Other
+/out
