@@ -2,7 +2,8 @@ import os
 import json
 
 
-def collect_fields_from_json_files(relative_paths):
+
+def collect_fields_from_json_files(relative_paths, output_path):
     all_fields = set()
     total_files = 0
     total_objects = 0
@@ -34,8 +35,6 @@ def collect_fields_from_json_files(relative_paths):
     print(f"\nProcessed {total_files} files and {total_objects} objects.")
     print(f"Total unique fields found: {len(result)}")
 
-
-    output_path = "fields.json"
     try:
         with open(output_path, 'w', encoding='utf-8') as out_f:
             json.dump(result, out_f, indent=2, ensure_ascii=False)
@@ -48,7 +47,9 @@ def collect_fields_from_json_files(relative_paths):
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) < 2:
-        print("Usage: python collect-fields.py <json_file1> <json_file2> ...")
+    if len(sys.argv) < 3:
+        print("Usage: python 1-collect-fields.py <json_file1> <json_file2> ... <output_file>")
     else:
-        collect_fields_from_json_files(sys.argv[1:])
+        input_files = sys.argv[1:-1]
+        output_file = sys.argv[-1]
+        collect_fields_from_json_files(input_files, output_file)

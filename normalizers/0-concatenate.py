@@ -35,15 +35,9 @@ def concatenate_json_files(input_files, output_file="concatenated.json"):
 
 
 if __name__ == "__main__":
-	if len(sys.argv) < 2:
-		print("Usage: python concatenate.py <json_file1> <json_file2> ... [output_file]")
+	if len(sys.argv) < 3:
+		print("Usage: python 0-concatenate.py <json_file1> <json_file2> ... <output_file>")
 		sys.exit(1)
-	args = sys.argv[1:]
-	if len(args) >= 2 and args[-1].endswith('.json') and os.path.splitext(args[-1])[0] != '':
-		# If the last argument is a .json file and not just an empty string, treat as output file
-		input_files = args[:-1]
-		output_file = args[-1]
-	else:
-		input_files = args
-		output_file = "concatenated.json"
+	input_files = sys.argv[1:-1]
+	output_file = sys.argv[-1]
 	concatenate_json_files(input_files, output_file)
