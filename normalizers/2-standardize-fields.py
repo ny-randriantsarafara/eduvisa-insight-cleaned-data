@@ -2,9 +2,9 @@ import sys
 import os
 import json
 
-def add_missing_fields(fields_path, data_path, output_path):
+def standardize_fields(fields_path, data_path, output_path):
 	"""
-	Add missing fields to each object in the data file, using the fields from fields_path.
+	Add missing fields and remove non-existing ones from each object in the data file, using the fields from fields_path.
 	Args:
 		fields_path (str): Path to JSON file containing a list of field names.
 		data_path (str): Path to JSON file containing a list of objects.
@@ -21,7 +21,6 @@ def add_missing_fields(fields_path, data_path, output_path):
 		data = json.load(f)
 	if not isinstance(data, list):
 		raise ValueError(f"{data_path} does not contain a JSON array of objects.")
-
 
 	# Create new objects with only the specified fields
 	new_data = []
@@ -40,6 +39,6 @@ def add_missing_fields(fields_path, data_path, output_path):
 
 if __name__ == "__main__":
 	if len(sys.argv) != 4:
-		print("Usage: python 2-add-missing-fields.py <fields.json> <data.json> <output.json>")
+		print("Usage: python 2-standardize-fields.py <fields.json> <data.json> <output.json>")
 		sys.exit(1)
-	add_missing_fields(sys.argv[1], sys.argv[2], sys.argv[3])
+	standardize_fields(sys.argv[1], sys.argv[2], sys.argv[3])
