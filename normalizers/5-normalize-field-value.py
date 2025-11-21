@@ -24,11 +24,25 @@ def normalize_field_value(normalization_map_path, data_path, output_path):
 		for field, value in item.items():
 			if field in normalization_map:
 				field_map = normalization_map[field]
-				# Use str(value) for lookup, but handle None/null
-				lookup_key = value if value is not None else "null"
+				# Normalize lookup_key for null and boolean values
+				if value is None:
+					lookup_key = "null"
+				elif isinstance(value, bool):
+					lookup_key = str(value).lower()  # "true" or "false"
+				else:
+					lookup_key = str(value)
 				# If value not in map, keep original
 				if lookup_key in field_map:
-					new_item[field] = field_map[lookup_key]
+					normalized_value = field_map[lookup_key]
+					# Convert string 'true'/'false'/'null' to actual types
+					if normalized_value == "true":
+						new_item[field] = True
+					elif normalized_value == "false":
+						new_item[field] = False
+					elif normalized_value == "null":
+						new_item[field] = None
+					else:
+						new_item[field] = normalized_value
 		normalized_data.append(new_item)
 
 	# Write output
