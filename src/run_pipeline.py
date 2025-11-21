@@ -1,7 +1,7 @@
 import os
 import shutil
 import datetime
-from data_processing.normalize import (
+from dataprocessing.normalize import (
     concatenate_json_files,
     collect_fields_from_json_files,
     standardize_fields,
@@ -15,12 +15,18 @@ from loading.load_to_db import load_to_mongodb
 def main():
     # Define file paths
     raw_data_dir = 'data/raw'
-    interim_data_dir = 'data/interim'
+    interim_data_dir = 'data/intermediate'
     processed_data_dir = 'data/processed'
+    pipeline_setup_dir = 'pipeline-setup'
+    backup_dir = 'backups'
+
+    fields_to_keep_file = os.path.join(pipeline_setup_dir, 'fields-to-keep.json')
+    normalization_map_file = os.path.join(pipeline_setup_dir, 'field-normalization-map.json')
 
     # Ensure directories exist
     os.makedirs(interim_data_dir, exist_ok=True)
     os.makedirs(processed_data_dir, exist_ok=True)
+    os.makedirs(backup_dir, exist_ok=True)
 
     # Step 0: Concatenate raw data
     raw_files = [os.path.join(raw_data_dir, f) for f in os.listdir(raw_data_dir) if f.endswith('.json')]
@@ -34,11 +40,18 @@ def main():
     collect_fields_from_json_files([concatenated_file], fields_file)
 
     # --- Manual Step: Curate fields ---
-    fields_to_keep_file = os.path.join(interim_data_dir, 'fields-to-keep.json')
+    # Back up the existing fields-to-keep file before overwriting it
+    if os.path.exists(fields_to_keep_file):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        backup_file = os.path.join(backup_dir, f"fields-to-keep.json.{timestamp}.bak")
+        print(f"Backing up existing fields-to-keep.json to {backup_file}")
+        shutil.copy(fields_to_keep_file, backup_file)
+
+    # Always overwrite fields-to-keep.json with the latest from all-fields.json
     shutil.copy(fields_file, fields_to_keep_file)
     print(f"\n--- Manual Step: Edit the list of fields to keep ---")
-    print(f"A file 'fields-to_keep.json' has been created at: {fields_to_keep_file}")
-    print("Please edit this file to remove any fields you do not want to include in the final dataset.")
+    print(f"The file 'fields-to-keep.json' has been regenerated at: {fields_to_keep_file}")
+    print("Please review this file to curate the fields for the final dataset.")
     input("Press Enter to continue after editing the file...")
 
     # Step 2: Standardize fields
@@ -52,13 +65,12 @@ def main():
     collect_field_values(standardized_file, field_values_file)
 
     # Step 4: Generate normalization map
-    normalization_map_file = os.path.join(interim_data_dir, 'field-normalization-map.json')
     print("\n--- Step 4: Generating normalization map ---")
     
     # Backup existing map before overwriting
     if os.path.exists(normalization_map_file):
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = f"{normalization_map_file}.{timestamp}.bak"
+        backup_file = os.path.join(backup_dir, f"field-normalization-map.json.{timestamp}.bak")
         print(f"Backing up existing normalization map to {backup_file}")
         shutil.copy(normalization_map_file, backup_file)
 
