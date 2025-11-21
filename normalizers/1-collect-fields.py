@@ -38,7 +38,7 @@ def collect_fields_from_json_files(relative_paths):
     output_path = "fields.json"
     try:
         with open(output_path, 'w', encoding='utf-8') as out_f:
-            json.dump(result, out_f, indent=2)
+            json.dump(result, out_f, indent=2, ensure_ascii=False)
         print(f"Fields written to {output_path}")
     except Exception as e:
         print(f"Failed to write to {output_path}: {e}")
