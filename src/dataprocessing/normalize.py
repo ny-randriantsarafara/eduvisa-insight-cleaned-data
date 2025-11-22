@@ -164,7 +164,7 @@ def generate_normalization_map(input_path, fields_to_keep):
 # =============================================================================
 
 
-def transform_to_uppercase(value):
+def transform_to_uppercase(value, item=None):
     """Converts a string value to uppercase."""
     if isinstance(value, str):
         return value.upper()
@@ -177,13 +177,13 @@ def transform_to_uppercase(value):
 
 FUNCTION_REGISTRY = {
     'to_uppercase': transform_to_uppercase,
-    'split_comma': lambda v: v.split(',') if isinstance(v, str) else v,
+    'split_comma': lambda v, item=None: v.split(',') if isinstance(v, str) else v,
 }
 
 
-def apply_dynamic_rule(value, rule):
+def apply_dynamic_rule(value, rule, item=None):
     """
-    Applies a dynamic rule to a value.
+    Applies a dynamic rule to a value, with access to the full item.
     """
     condition = rule.get('if', {})
     action = rule.get('then')
@@ -197,7 +197,18 @@ def apply_dynamic_rule(value, rule):
         elif op == 'apply_function':
             func = FUNCTION_REGISTRY.get(op_val)
             if func:
-                return func(value)
+                return func(value, item=item)
+        elif op == '$condition' and item:
+            field_to_check = op_val.get('field')
+            operator = op_val.get('op')
+            check_value = op_val.get('value')
+            
+            if field_to_check in item:
+                item_value = item[field_to_check]
+                if operator == '$in' and item_value in check_value:
+                    return action
+                elif operator == '$eq' and item_value == check_value:
+                    return action
     return None
 
 
