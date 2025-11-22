@@ -10,10 +10,9 @@ venv/
 .vscode/
 
 # Data files
-# Ignore all data by default...
-data/
+data/intermediate/
+data/processed/
 
-!data/raw/
 
 # Backup files
 *.bak
