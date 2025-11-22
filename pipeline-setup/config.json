@@ -1,4 +1,17 @@
 {
+  "dataPaths": {
+    "rawDir": "data/raw",
+    "interimDir": "data/intermediate",
+    "processedDir": "data/processed",
+    "concatenatedFile": "data/intermediate/concatenated.json",
+    "allFieldsFile": "data/intermediate/all-fields.json",
+    "standardizedFile": "data/intermediate/standardized.json",
+    "fieldValuesFile": "data/intermediate/field-values.json",
+    "normalizedDataPath": "data/processed/normalized-data-with-ids.json",
+    "finalDataPath": "data/processed/normalized-data-with-ids.json",
+    "groupingConfigPath": "pipeline-setup/grouping.json",
+    "groupedDataPath": "data/processed/grouped-data.json"
+  },
   "fields_to_keep": [
     "id",
     "accommodation_type",

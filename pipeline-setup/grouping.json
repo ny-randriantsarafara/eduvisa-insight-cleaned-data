@@ -1,0 +1,77 @@
+{
+  "id": "id",
+  "applicantProfile": {
+    "is_minor": "is_minor",
+    "years_since_diploma": "years_since_diploma",
+    "language_cert": "language_cert",
+    "cf_interview_quality": "cf_interview_quality",
+    "resume_studies": "resume_studies",
+    "self_financed": "self_financed",
+    "used_helper": "used_helper"
+  },
+  "academicDetails": {
+    "entry_level": "entry_level",
+    "is_private_school": "is_private_school",
+    "school_type": "school_type",
+    "prior_agreement": "prior_agreement",
+    "procedure_type": "procedure_type",
+    "start_date": "start_date",
+    "late_start_date": "late_start_date",
+    "cvec_proof": "cvec_proof"
+  },
+  "applicationTimeline": {
+    "departure_date": "departure_date",
+    "deposit_date": "deposit_date",
+    "retrieval_date": "retrieval_date",
+    "processing_days": "processing_days",
+    "tls_service": "tls_service",
+    "did_appeal": "did_appeal"
+  },
+  "financialGuarantee": {
+    "guarantee_fr_eur": "guarantee_fr_eur",
+    "guarantee_mg_eur": "guarantee_mg_eur",
+    "guarantee_overseas_eur": "guarantee_overseas_eur",
+    "guarantors_count": "guarantors_count",
+    "highest_guarantee_eur": "highest_guarantee_eur",
+    "total_guarantee_eur": "total_guarantee_eur",
+    "tuition_eur": "tuition_eur",
+    "tuition_paid_upfront": "tuition_paid_upfront",
+    "has_guarantor_fr": "has_guarantor_fr"
+  },
+  "accommodation": {
+    "accommodation_type": "accommodation_type",
+    "distance_min": "distance_min",
+    "has_gmaps_capture": "has_gmaps_capture",
+    "has_home_insurance": "has_home_insurance",
+    "rent_eur": "rent_eur"
+  },
+  "documentsAndProofs": {
+    "has_blocked_account": "has_blocked_account",
+    "has_edf_bill": "has_edf_bill",
+    "has_family_ties": "has_family_ties",
+    "has_job_mg": "has_job_mg",
+    "has_job_promise_mg": "has_job_promise_mg",
+    "has_job_promise_repeat": "has_job_promise_repeat",
+    "has_motivation_letter": "has_motivation_letter",
+    "has_prev_refusals": "has_prev_refusals",
+    "has_property_deed": "has_property_deed",
+    "has_property_mg": "has_property_mg",
+    "has_reco_employer": "has_reco_employer",
+    "has_reco_letter": "has_reco_letter",
+    "has_return_letter": "has_return_letter",
+    "has_study_plan": "has_study_plan",
+    "has_tax_notice_fr": "has_tax_notice_fr",
+    "prev_refusals_count": "prev_refusals_count"
+  },
+  "insuranceAndTravel": {
+    "insurance_months": "insurance_months",
+    "insurance_provider": "insurance_provider",
+    "flight_company": "flight_company",
+    "visa_duration_days": "visa_duration_days",
+    "visa_granted_duration_days": "visa_granted_duration_days"
+  },
+  "tagsAndTestimonials": {
+    "positive_tags": "positive_tags",
+    "raw": "raw"
+  }
+}
