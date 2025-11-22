@@ -138,8 +138,9 @@ def generate_normalization_map(input_path, output_path):
     for field, values in data.items():
         value_map = {}
         for value in values:
-            # Use json.dumps to handle all value types as keys
-            value_map[json.dumps(value, sort_keys=True)] = ""
+            # Handle strings directly, dump others to handle all value types as keys
+            key = value if isinstance(value, str) else json.dumps(value, sort_keys=True)
+            value_map[key] = ""
         
         normalization_map[field] = {
             "value_mappings": value_map,
