@@ -67,7 +67,7 @@
   "normalization_map": {
     "accommodation_type": {
       "value_mappings": {
-        "null": null,
+        "null": "UNSPECIFIED",
         "agence_immobiliere_citya": "PAID",
         "avenant_bail_chez_cousin": "FREE",
         "chez_famille": "FREE",
@@ -115,7 +115,7 @@
     },
     "cf_interview_quality": {
       "value_mappings": {
-        "null": null,
+        "null": "UNSPECIFIED",
         "excellent": "EXCELLENT",
         "good": "GOOD",
         "insuffisant_initialement": "INSUFFICIENT",
