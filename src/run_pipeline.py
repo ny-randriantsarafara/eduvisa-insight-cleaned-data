@@ -50,31 +50,34 @@ def main():
     print("\n--- Step 1: Collecting fields ---")
     collect_fields_from_json_files([concatenated_file], fields_file)
 
-    # --- Manual Step: Curate fields ---
-    # Back up the existing config file before overwriting it
-    if os.path.exists(config_file):
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
-        print(f"Backing up existing config.yml to {backup_file}")
-        shutil.copy(config_file, backup_file)
+    # --- Optional Step: Curate fields ---
+    regenerate_fields = input("Do you want to regenerate the 'fields_to_keep' list? (y/N): ").lower().strip() == 'y'
+    if regenerate_fields:
+        # Back up the existing config file before overwriting it
+        if os.path.exists(config_file):
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
+            print(f"Backing up existing config.yml to {backup_file}")
+            shutil.copy(config_file, backup_file)
 
-    # Always overwrite fields-to-keep in config.yml with the latest from all-fields.json
-    with open(fields_file, 'r') as f:
-        all_fields = json.load(f)
-    config['fields_to_keep'] = all_fields
-    with open(config_file, 'w') as f:
-        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+        # Overwrite fields-to-keep in config.yml with the latest from all-fields.json
+        with open(fields_file, 'r') as f:
+            all_fields = json.load(f)
+        config['fields_to_keep'] = all_fields
+        with open(config_file, 'w') as f:
+            yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
-    print(f"\n--- Manual Step: Edit the list of fields to keep ---")
-    print(
-        f"The 'fields_to_keep' section in 'config.yml' has been regenerated at: {config_file}")
-    print("Please review this file to curate the fields for the final dataset.")
-    input("Press Enter to continue after editing the file...")
+        print(f"\n--- Manual Step: Edit the list of fields to keep ---")
+        print(f"The 'fields_to_keep' section in 'config.yml' has been regenerated at: {config_file}")
+        print("Please review this file to curate the fields for the final dataset.")
+        input("Press Enter to continue after editing the file...")
 
-    # Reload config after manual edit
-    with open(config_file, 'r') as f:
-        config = yaml.safe_load(f)
-    fields_to_keep = config['fields_to_keep']
+        # Reload config after manual edit
+        with open(config_file, 'r') as f:
+            config = yaml.safe_load(f)
+        fields_to_keep = config['fields_to_keep']
+    else:
+        print("Skipping 'fields_to_keep' regeneration.")
 
     # Step 2: Standardize fields
     standardized_file = os.path.join(interim_data_dir, 'standardized.json')
@@ -88,28 +91,29 @@ def main():
 
     # Step 4: Generate normalization map
     print("\n--- Step 4: Generating normalization map ---")
+    regenerate_map = input("Do you want to regenerate the 'normalization_map'? (y/N): ").lower().strip() == 'y'
+    if regenerate_map:
+        # Backup existing config before overwriting
+        if os.path.exists(config_file):
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
+            print(f"Backing up existing config to {backup_file}")
+            shutil.copy(config_file, backup_file)
 
-    # Backup existing config before overwriting
-    if os.path.exists(config_file):
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
-        print(f"Backing up existing config to {backup_file}")
-        shutil.copy(config_file, backup_file)
+        new_normalization_map = generate_normalization_map(field_values_file)
+        config['normalization_map'] = new_normalization_map
+        with open(config_file, 'w') as f:
+            yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
-    new_normalization_map = generate_normalization_map(field_values_file)
-    config['normalization_map'] = new_normalization_map
-    with open(config_file, 'w') as f:
-        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+        print(f"Please review and edit the normalization map in: {config_file}")
+        input("Press Enter to continue after editing the map...")
 
-    print(f"Please review and edit the normalization map in: {config_file}")
-    input("Press Enter to continue after editing the map...")
-
-    # Reload config after manual edit
-    with open(config_file, 'r') as f:
-        config = yaml.safe_load(f)
-    normalization_map = config['normalization_map']
-
-    # Step 5: Normalize field values
+        # Reload config after manual edit
+        with open(config_file, 'r') as f:
+            config = yaml.safe_load(f)
+        normalization_map = config['normalization_map']
+    else:
+        print("Skipping 'normalization_map' regeneration.")    # Step 5: Normalize field values
     normalized_file = os.path.join(processed_data_dir, 'normalized-data.json')
     print("\n--- Step 5: Normalizing field values ---")
     normalize_field_value(
