@@ -4,6 +4,7 @@ import json
 import hashlib
 import re
 
+
 def concatenate_json_files(input_files, output_file):
     """
     Concatenate JSON arrays from multiple files into a single JSON array file.
@@ -19,7 +20,8 @@ def concatenate_json_files(input_files, output_file):
             try:
                 data = json.load(f)
                 if not isinstance(data, list):
-                    print(f"File {abs_path} does not contain a JSON array. Skipping.")
+                    print(
+                        f"File {abs_path} does not contain a JSON array. Skipping.")
                     continue
                 all_items.extend(data)
             except Exception as e:
@@ -29,6 +31,7 @@ def concatenate_json_files(input_files, output_file):
         json.dump(all_items, out_f, indent=2, ensure_ascii=False)
     print(f"Wrote {len(all_items)} items to {output_file}")
     return len(all_items)
+
 
 def collect_fields_from_json_files(relative_paths, output_path):
     all_fields = set()
@@ -71,6 +74,7 @@ def collect_fields_from_json_files(relative_paths, output_path):
 
     return result
 
+
 def standardize_fields(fields, data_path, output_path):
     """
     Add missing fields and remove non-existing ones from each object in the data file, using the fields from fields_path.
@@ -81,7 +85,8 @@ def standardize_fields(fields, data_path, output_path):
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     if not isinstance(data, list):
-        raise ValueError(f"{data_path} does not contain a JSON array of objects.")
+        raise ValueError(
+            f"{data_path} does not contain a JSON array of objects.")
 
     new_data = []
     for obj in data:
@@ -93,7 +98,9 @@ def standardize_fields(fields, data_path, output_path):
 
     with open(output_path, 'w', encoding='utf-8') as out_f:
         json.dump(new_data, out_f, indent=2, ensure_ascii=False)
-    print(f"Wrote {len(new_data)} objects with only specified fields to {output_path}")
+    print(
+        f"Wrote {len(new_data)} objects with only specified fields to {output_path}")
+
 
 def collect_field_values(input_file, output_file):
     """
@@ -114,16 +121,19 @@ def collect_field_values(input_file, output_file):
             for k, v in obj.items():
                 if k not in field_values:
                     field_values[k] = set()
-                field_values[k].add(json.dumps(v, ensure_ascii=False, sort_keys=True))
-    
+                field_values[k].add(json.dumps(
+                    v, ensure_ascii=False, sort_keys=True))
+
     def safe_sort_key(x):
         if x is None:
             return (0, '')
         return (1, str(x))
-    result = {k: sorted([json.loads(val) for val in vals], key=safe_sort_key) for k, vals in field_values.items()}
+    result = {k: sorted([json.loads(val) for val in vals], key=safe_sort_key)
+              for k, vals in field_values.items()}
     with open(output_file, 'w', encoding='utf-8') as out_f:
         json.dump(result, out_f, indent=2, ensure_ascii=False)
     print(f"Extracted field values for {len(result)} fields to {output_file}")
+
 
 def generate_normalization_map(input_path, fields_to_keep):
     if not os.path.isfile(input_path):
@@ -138,9 +148,10 @@ def generate_normalization_map(input_path, fields_to_keep):
             value_map = {}
             for value in values:
                 # Handle strings directly, dump others to handle all value types as keys
-                key = value if isinstance(value, str) else json.dumps(value, sort_keys=True)
+                key = value if isinstance(
+                    value, str) else json.dumps(value, sort_keys=True)
                 value_map[key] = ""
-            
+
             normalization_map[field] = {
                 "value_mappings": value_map,
                 "dynamic_rules": [],
@@ -152,6 +163,7 @@ def generate_normalization_map(input_path, fields_to_keep):
 #  --- Dynamic Transformation Functions ---
 # =============================================================================
 
+
 def transform_to_uppercase(value):
     """Converts a string value to uppercase."""
     if isinstance(value, str):
@@ -162,9 +174,12 @@ def transform_to_uppercase(value):
 #  --- Function Registry ---
 # =============================================================================
 
+
 FUNCTION_REGISTRY = {
     'to_uppercase': transform_to_uppercase,
+    'split_comma': lambda v: v.split(',') if isinstance(v, str) else v,
 }
+
 
 def apply_dynamic_rule(value, rule):
     """
@@ -185,6 +200,7 @@ def apply_dynamic_rule(value, rule):
                 return func(value)
     return None
 
+
 def normalize_field_value(normalization_map, data_path, output_path):
     """
     Normalize field values in a JSON array using a normalization map.
@@ -199,13 +215,13 @@ def normalize_field_value(normalization_map, data_path, output_path):
         for field, value in item.items():
             if field in normalization_map:
                 field_config = normalization_map[field]
-                
+
                 # 1. Try direct value mapping first
                 value_mappings = field_config.get('value_mappings', {})
-                
+
                 # Handle different types for lookup
                 lookup_key = json.dumps(value, sort_keys=True)
-                
+
                 if lookup_key in value_mappings:
                     new_item[field] = value_mappings[lookup_key]
                     continue
@@ -219,20 +235,22 @@ def normalize_field_value(normalization_map, data_path, output_path):
                         new_item[field] = result
                         rule_applied = True
                         break
-                
+
                 if rule_applied:
                     continue
 
                 # 3. Apply default value if no mapping or rule matched
                 if 'default' in field_config:
                     new_item[field] = field_config['default']
-                
+
         normalized_data.append(new_item)
 
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(normalized_data, f, indent=2, ensure_ascii=False)
 
-    print(f"Normalized {len(normalized_data)} items. Output written to {output_path}")
+    print(
+        f"Normalized {len(normalized_data)} items. Output written to {output_path}")
+
 
 def generate_id(obj):
     obj_copy = dict(obj)
@@ -241,6 +259,7 @@ def generate_id(obj):
     hash_hex = hashlib.sha256(obj_str.encode("utf-8")).hexdigest()
     uuid_like = f"{hash_hex[:8]}-{hash_hex[8:12]}-{hash_hex[12:16]}-{hash_hex[16:20]}-{hash_hex[20:32]}-{hash_hex[32:64]}"
     return uuid_like
+
 
 def add_ids_to_data(input_path, output_path):
     print(f"Reading input file: {input_path}")
@@ -269,45 +288,70 @@ def add_ids_to_data(input_path, output_path):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Data normalization pipeline CLI.")
-    subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
+    parser = argparse.ArgumentParser(
+        description="Data normalization pipeline CLI.")
+    subparsers = parser.add_subparsers(
+        dest="command", required=True, help="Available commands")
 
     # --- Sub-parser for concatenate ---
-    parser_concat = subparsers.add_parser("concatenate", help="Concatenate multiple JSON files.")
-    parser_concat.add_argument("input_files", nargs="+", help="List of input JSON file paths.")
-    parser_concat.add_argument("--output", required=True, help="Output file path.")
+    parser_concat = subparsers.add_parser(
+        "concatenate", help="Concatenate multiple JSON files.")
+    parser_concat.add_argument(
+        "input_files", nargs="+", help="List of input JSON file paths.")
+    parser_concat.add_argument(
+        "--output", required=True, help="Output file path.")
 
     # --- Sub-parser for collect_fields ---
-    parser_collect = subparsers.add_parser("collect_fields", help="Collect all unique fields from JSON files.")
-    parser_collect.add_argument("input_files", nargs="+", help="List of input JSON file paths.")
-    parser_collect.add_argument("--output", required=True, help="Output file for the list of fields.")
+    parser_collect = subparsers.add_parser(
+        "collect_fields", help="Collect all unique fields from JSON files.")
+    parser_collect.add_argument(
+        "input_files", nargs="+", help="List of input JSON file paths.")
+    parser_collect.add_argument(
+        "--output", required=True, help="Output file for the list of fields.")
 
     # --- Sub-parser for standardize_fields ---
-    parser_standardize = subparsers.add_parser("standardize", help="Standardize objects in a data file based on a fields file.")
-    parser_standardize.add_argument("--fields-file", required=True, help="Path to JSON file with the list of fields to keep.")
-    parser_standardize.add_argument("--data-file", required=True, help="Path to the data file to standardize.")
-    parser_standardize.add_argument("--output", required=True, help="Path for the output standardized data file.")
+    parser_standardize = subparsers.add_parser(
+        "standardize", help="Standardize objects in a data file based on a fields file.")
+    parser_standardize.add_argument(
+        "--fields-file", required=True, help="Path to JSON file with the list of fields to keep.")
+    parser_standardize.add_argument(
+        "--data-file", required=True, help="Path to the data file to standardize.")
+    parser_standardize.add_argument(
+        "--output", required=True, help="Path for the output standardized data file.")
 
     # --- Sub-parser for collect_field_values ---
-    parser_values = subparsers.add_parser("collect_values", help="Collect all unique values for each field.")
-    parser_values.add_argument("--input-file", required=True, help="Path to the input data file.")
-    parser_values.add_argument("--output", required=True, help="Path for the output file with field values.")
+    parser_values = subparsers.add_parser(
+        "collect_values", help="Collect all unique values for each field.")
+    parser_values.add_argument(
+        "--input-file", required=True, help="Path to the input data file.")
+    parser_values.add_argument(
+        "--output", required=True, help="Path for the output file with field values.")
 
     # --- Sub-parser for generate_normalization_map ---
-    parser_map = subparsers.add_parser("generate_map", help="Generate a blank normalization map.")
-    parser_map.add_argument("--input-file", required=True, help="Path to the field values file.")
-    parser_map.add_argument("--output", required=True, help="Path for the output normalization map.")
+    parser_map = subparsers.add_parser(
+        "generate_map", help="Generate a blank normalization map.")
+    parser_map.add_argument("--input-file", required=True,
+                            help="Path to the field values file.")
+    parser_map.add_argument("--output", required=True,
+                            help="Path for the output normalization map.")
 
     # --- Sub-parser for normalize_field_value ---
-    parser_normalize = subparsers.add_parser("normalize", help="Normalize data using a normalization map.")
-    parser_normalize.add_argument("--map-file", required=True, help="Path to the normalization map.")
-    parser_normalize.add_argument("--data-file", required=True, help="Path to the data file to normalize.")
-    parser_normalize.add_argument("--output", required=True, help="Path for the output normalized data file.")
+    parser_normalize = subparsers.add_parser(
+        "normalize", help="Normalize data using a normalization map.")
+    parser_normalize.add_argument(
+        "--map-file", required=True, help="Path to the normalization map.")
+    parser_normalize.add_argument(
+        "--data-file", required=True, help="Path to the data file to normalize.")
+    parser_normalize.add_argument(
+        "--output", required=True, help="Path for the output normalized data file.")
 
     # --- Sub-parser for add_ids ---
-    parser_ids = subparsers.add_parser("add_ids", help="Add a unique 'id' to each object.")
-    parser_ids.add_argument("--input-file", required=True, help="Path to the input data file.")
-    parser_ids.add_argument("--output", required=True, help="Path for the output data file with IDs.")
+    parser_ids = subparsers.add_parser(
+        "add_ids", help="Add a unique 'id' to each object.")
+    parser_ids.add_argument("--input-file", required=True,
+                            help="Path to the input data file.")
+    parser_ids.add_argument("--output", required=True,
+                            help="Path for the output data file with IDs.")
 
     args = parser.parse_args()
 
