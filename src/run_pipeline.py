@@ -111,7 +111,8 @@ def main():
             print(f"Backing up existing config to {backup_file}")
             shutil.copy(config_file, backup_file)
 
-        new_normalization_map = generate_normalization_map(field_values_file)
+        new_normalization_map = generate_normalization_map(
+            field_values_file, config['fields_to_keep'])
         config['normalization_map'] = new_normalization_map
         with open(config_file, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)

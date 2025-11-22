@@ -125,7 +125,7 @@ def collect_field_values(input_file, output_file):
         json.dump(result, out_f, indent=2, ensure_ascii=False)
     print(f"Extracted field values for {len(result)} fields to {output_file}")
 
-def generate_normalization_map(input_path):
+def generate_normalization_map(input_path, fields_to_keep):
     if not os.path.isfile(input_path):
         print(f"File not found: {input_path}")
         sys.exit(1)
@@ -134,17 +134,18 @@ def generate_normalization_map(input_path):
 
     normalization_map = {}
     for field, values in data.items():
-        value_map = {}
-        for value in values:
-            # Handle strings directly, dump others to handle all value types as keys
-            key = value if isinstance(value, str) else json.dumps(value, sort_keys=True)
-            value_map[key] = ""
-        
-        normalization_map[field] = {
-            "value_mappings": value_map,
-            "dynamic_rules": [],
-            "default": None
-        }
+        if field in fields_to_keep:
+            value_map = {}
+            for value in values:
+                # Handle strings directly, dump others to handle all value types as keys
+                key = value if isinstance(value, str) else json.dumps(value, sort_keys=True)
+                value_map[key] = ""
+            
+            normalization_map[field] = {
+                "value_mappings": value_map,
+                "dynamic_rules": [],
+                "default": None
+            }
     return normalization_map
 
 # =============================================================================
