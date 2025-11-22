@@ -231,7 +231,10 @@ def normalize_field_value(normalization_map, data_path, output_path):
                 value_mappings = field_config.get('value_mappings', {})
 
                 # Handle different types for lookup
-                lookup_key = json.dumps(value, sort_keys=True)
+                if isinstance(value, str):
+                    lookup_key = value
+                else:
+                    lookup_key = json.dumps(value, sort_keys=True)
 
                 if lookup_key in value_mappings:
                     new_item[field] = value_mappings[lookup_key]
