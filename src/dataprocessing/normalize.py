@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import hashlib
+import re
 
 def concatenate_json_files(input_files, output_file):
     """
@@ -137,16 +138,60 @@ def generate_normalization_map(input_path, output_path):
     for field, values in data.items():
         value_map = {}
         for value in values:
-            value_map[value] = ""
-        normalization_map[field] = value_map
+            # Use json.dumps to handle all value types as keys
+            value_map[json.dumps(value, sort_keys=True)] = ""
+        
+        normalization_map[field] = {
+            "value_mappings": value_map,
+            "dynamic_rules": [],
+            "default": None
+        }
 
     with open(output_path, 'w', encoding='utf-8') as out_f:
         json.dump(normalization_map, out_f, ensure_ascii=False, indent=2)
-    print(f"Normalization map written to {output_path}")
+    print(f"Normalization map with new structure written to {output_path}")
+
+# =============================================================================
+#  --- Dynamic Transformation Functions ---
+# =============================================================================
+
+def transform_to_uppercase(value):
+    """Converts a string value to uppercase."""
+    if isinstance(value, str):
+        return value.upper()
+    return value
+
+# =============================================================================
+#  --- Function Registry ---
+# =============================================================================
+
+FUNCTION_REGISTRY = {
+    'to_uppercase': transform_to_uppercase,
+}
+
+def apply_dynamic_rule(value, rule):
+    """
+    Applies a dynamic rule to a value.
+    """
+    condition = rule.get('if', {})
+    action = rule.get('then')
+
+    for op, op_val in condition.items():
+        if op == '$in' and value in op_val:
+            return action
+        elif op == '$regex':
+            if isinstance(value, str) and re.search(op_val, value):
+                return action
+        elif op == 'apply_function':
+            func = FUNCTION_REGISTRY.get(op_val)
+            if func:
+                return func(value)
+    return None
 
 def normalize_field_value(normalization_map_path, data_path, output_path):
     """
     Normalize field values in a JSON array using a normalization map.
+    The map can contain direct value mappings and dynamic rules.
     """
     with open(normalization_map_path, 'r', encoding='utf-8') as f:
         normalization_map = json.load(f)
@@ -159,23 +204,35 @@ def normalize_field_value(normalization_map_path, data_path, output_path):
         new_item = item.copy()
         for field, value in item.items():
             if field in normalization_map:
-                field_map = normalization_map[field]
-                if value is None:
-                    lookup_key = "null"
-                elif isinstance(value, bool):
-                    lookup_key = str(value).lower()
-                else:
-                    lookup_key = str(value)
-                if lookup_key in field_map:
-                    normalized_value = field_map[lookup_key]
-                    if normalized_value == "true":
-                        new_item[field] = True
-                    elif normalized_value == "false":
-                        new_item[field] = False
-                    elif normalized_value == "null":
-                        new_item[field] = None
-                    else:
-                        new_item[field] = normalized_value
+                field_config = normalization_map[field]
+                
+                # 1. Try direct value mapping first
+                value_mappings = field_config.get('value_mappings', {})
+                
+                # Handle different types for lookup
+                lookup_key = json.dumps(value, sort_keys=True)
+                
+                if lookup_key in value_mappings:
+                    new_item[field] = value_mappings[lookup_key]
+                    continue
+
+                # 2. Apply dynamic rules
+                rules = field_config.get('dynamic_rules', [])
+                rule_applied = False
+                for rule in rules:
+                    result = apply_dynamic_rule(value, rule)
+                    if result is not None:
+                        new_item[field] = result
+                        rule_applied = True
+                        break
+                
+                if rule_applied:
+                    continue
+
+                # 3. Apply default value if no mapping or rule matched
+                if 'default' in field_config:
+                    new_item[field] = field_config['default']
+                
         normalized_data.append(new_item)
 
     with open(output_path, 'w', encoding='utf-8') as f:
