@@ -1,7 +1,7 @@
 {
   "fields_to_keep": [
+    "id",
     "accommodation_type",
-    "acなどにcommodation_type",
     "cf_interview_quality",
     "cvec_proof",
     "departure_date",
@@ -35,7 +35,6 @@
     "has_study_plan",
     "has_tax_notice_fr",
     "highest_guarantee_eur",
-    "id",
     "insurance_months",
     "insurance_provider",
     "is_minor",
@@ -57,11 +56,8 @@
     "self_financed",
     "start_date",
     "tls_service",
-    "tls_service_type",
     "total_guarantee_eur",
-    "tu licensure_eur",
     "tuition_eur",
-    "tuition_paid_up Ucraina",
     "tuition_paid_upfront",
     "used_helper",
     "visa_duration_days",
@@ -113,14 +109,6 @@
         "résidence_étudiante": "",
         "studapart_colocation": "",
         "studio": ""
-      },
-      "dynamic_rules": [],
-      "default": null
-    },
-    "acなどにcommodation_type": {
-      "value_mappings": {
-        "null": "",
-        "location_privee": ""
       },
       "dynamic_rules": [],
       "default": null
@@ -880,13 +868,6 @@
         "840": "",
         "850": "",
         "950": ""
-      },
-      "dynamic_rules": [],
-      "default": null
-    },
-    "id": {
-      "value_mappings": {
-        "null": ""
       },
       "dynamic_rules": [],
       "default": null
@@ -1815,14 +1796,6 @@
       "dynamic_rules": [],
       "default": null
     },
-    "tls_service_type": {
-      "value_mappings": {
-        "null": "",
-        "PREMIUM": ""
-      },
-      "dynamic_rules": [],
-      "default": null
-    },
     "total_guarantee_eur": {
       "value_mappings": {
         "null": "",
@@ -1889,13 +1862,6 @@
       "dynamic_rules": [],
       "default": null
     },
-    "tu licensure_eur": {
-      "value_mappings": {
-        "null": ""
-      },
-      "dynamic_rules": [],
-      "default": null
-    },
     "tuition_eur": {
       "value_mappings": {
         "null": "",
@@ -1931,14 +1897,6 @@
         "9600": "",
         "9687": "",
         "9800": ""
-      },
-      "dynamic_rules": [],
-      "default": null
-    },
-    "tuition_paid_up Ucraina": {
-      "value_mappings": {
-        "null": "",
-        "false": ""
       },
       "dynamic_rules": [],
       "default": null
