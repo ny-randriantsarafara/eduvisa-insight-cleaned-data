@@ -1,5 +1,6 @@
 {
   "id": "id",
+  "outcome": "outcome",
   "applicantProfile": {
     "is_minor": "is_minor",
     "years_since_diploma": "years_since_diploma",
