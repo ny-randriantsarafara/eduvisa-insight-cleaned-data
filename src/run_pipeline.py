@@ -126,11 +126,15 @@ def main():
     add_ids_to_data(normalized_file, final_data_file)
 
     # Step 7: Load to MongoDB
-    print("\n--- Step 7: Loading to MongoDB ---")
-    mongo_uri = os.getenv("MONGO_URI")
-    db_name = os.getenv("MONGO_DB_NAME")
-    collection_name = os.getenv("MONGO_COLLECTION_NAME")
-    load_to_mongodb(final_data_file, db_name, collection_name, mongo_uri)
+    load_to_db = input("\nDo you want to load the data to MongoDB? (y/N): ").lower().strip() == 'y'
+    if load_to_db:
+        print("\n--- Step 7: Loading to MongoDB ---")
+        mongo_uri = os.getenv("MONGO_URI")
+        db_name = os.getenv("MONGO_DB_NAME")
+        collection_name = os.getenv("MONGO_COLLECTION_NAME")
+        load_to_mongodb(final_data_file, db_name, collection_name, mongo_uri)
+    else:
+        print("\nSkipping loading to MongoDB.")
 
     print("\n--- Pipeline finished ---")
 
