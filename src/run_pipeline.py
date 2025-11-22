@@ -12,6 +12,10 @@ from dataprocessing.normalize import (
 )
 from loading.load_to_db import load_to_mongodb
 
+import yaml
+import json
+
+
 def main():
     # Define file paths
     raw_data_dir = 'data/raw'
@@ -20,8 +24,14 @@ def main():
     pipeline_setup_dir = 'pipeline-setup'
     backup_dir = 'backups'
 
-    fields_to_keep_file = os.path.join(pipeline_setup_dir, 'fields-to-keep.json')
-    normalization_map_file = os.path.join(pipeline_setup_dir, 'field-normalization-map.json')
+    config_file = os.path.join(pipeline_setup_dir, 'config.yml')
+
+    # Load config
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+
+    fields_to_keep = config['fields_to_keep']
+    normalization_map = config['normalization_map']
 
     # Ensure directories exist
     os.makedirs(interim_data_dir, exist_ok=True)
@@ -29,7 +39,8 @@ def main():
     os.makedirs(backup_dir, exist_ok=True)
 
     # Step 0: Concatenate raw data
-    raw_files = [os.path.join(raw_data_dir, f) for f in os.listdir(raw_data_dir) if f.endswith('.json')]
+    raw_files = [os.path.join(raw_data_dir, f) for f in os.listdir(
+        raw_data_dir) if f.endswith('.json')]
     concatenated_file = os.path.join(interim_data_dir, 'concatenated.json')
     print("--- Step 0: Concatenating files ---")
     concatenate_json_files(raw_files, concatenated_file)
@@ -40,24 +51,35 @@ def main():
     collect_fields_from_json_files([concatenated_file], fields_file)
 
     # --- Manual Step: Curate fields ---
-    # Back up the existing fields-to-keep file before overwriting it
-    if os.path.exists(fields_to_keep_file):
+    # Back up the existing config file before overwriting it
+    if os.path.exists(config_file):
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = os.path.join(backup_dir, f"fields-to-keep.json.{timestamp}.bak")
-        print(f"Backing up existing fields-to-keep.json to {backup_file}")
-        shutil.copy(fields_to_keep_file, backup_file)
+        backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
+        print(f"Backing up existing config.yml to {backup_file}")
+        shutil.copy(config_file, backup_file)
 
-    # Always overwrite fields-to-keep.json with the latest from all-fields.json
-    shutil.copy(fields_file, fields_to_keep_file)
+    # Always overwrite fields-to-keep in config.yml with the latest from all-fields.json
+    with open(fields_file, 'r') as f:
+        all_fields = json.load(f)
+    config['fields_to_keep'] = all_fields
+    with open(config_file, 'w') as f:
+        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+
     print(f"\n--- Manual Step: Edit the list of fields to keep ---")
-    print(f"The file 'fields-to-keep.json' has been regenerated at: {fields_to_keep_file}")
+    print(
+        f"The 'fields_to_keep' section in 'config.yml' has been regenerated at: {config_file}")
     print("Please review this file to curate the fields for the final dataset.")
     input("Press Enter to continue after editing the file...")
+
+    # Reload config after manual edit
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    fields_to_keep = config['fields_to_keep']
 
     # Step 2: Standardize fields
     standardized_file = os.path.join(interim_data_dir, 'standardized.json')
     print("\n--- Step 2: Standardizing fields ---")
-    standardize_fields(fields_to_keep_file, concatenated_file, standardized_file)
+    standardize_fields(fields_to_keep, concatenated_file, standardized_file)
 
     # Step 3: Extract field values
     field_values_file = os.path.join(interim_data_dir, 'field-values.json')
@@ -66,25 +88,36 @@ def main():
 
     # Step 4: Generate normalization map
     print("\n--- Step 4: Generating normalization map ---")
-    
-    # Backup existing map before overwriting
-    if os.path.exists(normalization_map_file):
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = os.path.join(backup_dir, f"field-normalization-map.json.{timestamp}.bak")
-        print(f"Backing up existing normalization map to {backup_file}")
-        shutil.copy(normalization_map_file, backup_file)
 
-    generate_normalization_map(field_values_file, normalization_map_file)
-    print(f"Please review and edit the normalization map at: {normalization_map_file}")
+    # Backup existing config before overwriting
+    if os.path.exists(config_file):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        backup_file = os.path.join(backup_dir, f"config.yml.{timestamp}.bak")
+        print(f"Backing up existing config to {backup_file}")
+        shutil.copy(config_file, backup_file)
+
+    new_normalization_map = generate_normalization_map(field_values_file)
+    config['normalization_map'] = new_normalization_map
+    with open(config_file, 'w') as f:
+        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+
+    print(f"Please review and edit the normalization map in: {config_file}")
     input("Press Enter to continue after editing the map...")
+
+    # Reload config after manual edit
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    normalization_map = config['normalization_map']
 
     # Step 5: Normalize field values
     normalized_file = os.path.join(processed_data_dir, 'normalized-data.json')
     print("\n--- Step 5: Normalizing field values ---")
-    normalize_field_value(normalization_map_file, standardized_file, normalized_file)
+    normalize_field_value(
+        normalization_map, standardized_file, normalized_file)
 
     # Step 6: Generate IDs
-    final_data_file = os.path.join(processed_data_dir, 'normalized-data-with-ids.json')
+    final_data_file = os.path.join(
+        processed_data_dir, 'normalized-data-with-ids.json')
     print("\n--- Step 6: Generating IDs ---")
     add_ids_to_data(normalized_file, final_data_file)
 
@@ -96,6 +129,7 @@ def main():
     load_to_mongodb(final_data_file, db_name, collection_name, mongo_uri)
 
     print("\n--- Pipeline finished ---")
+
 
 if __name__ == '__main__':
     from dotenv import load_dotenv

@@ -71,14 +71,12 @@ def collect_fields_from_json_files(relative_paths, output_path):
 
     return result
 
-def standardize_fields(fields_path, data_path, output_path):
+def standardize_fields(fields, data_path, output_path):
     """
     Add missing fields and remove non-existing ones from each object in the data file, using the fields from fields_path.
     """
-    with open(fields_path, 'r', encoding='utf-8') as f:
-        fields = json.load(f)
     if not isinstance(fields, list):
-        raise ValueError(f"{fields_path} does not contain a JSON array of field names.")
+        raise ValueError(f"fields must be a list of field names.")
 
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -127,7 +125,7 @@ def collect_field_values(input_file, output_file):
         json.dump(result, out_f, indent=2, ensure_ascii=False)
     print(f"Extracted field values for {len(result)} fields to {output_file}")
 
-def generate_normalization_map(input_path, output_path):
+def generate_normalization_map(input_path):
     if not os.path.isfile(input_path):
         print(f"File not found: {input_path}")
         sys.exit(1)
@@ -147,10 +145,7 @@ def generate_normalization_map(input_path, output_path):
             "dynamic_rules": [],
             "default": None
         }
-
-    with open(output_path, 'w', encoding='utf-8') as out_f:
-        json.dump(normalization_map, out_f, ensure_ascii=False, indent=2)
-    print(f"Normalization map with new structure written to {output_path}")
+    return normalization_map
 
 # =============================================================================
 #  --- Dynamic Transformation Functions ---
@@ -189,14 +184,11 @@ def apply_dynamic_rule(value, rule):
                 return func(value)
     return None
 
-def normalize_field_value(normalization_map_path, data_path, output_path):
+def normalize_field_value(normalization_map, data_path, output_path):
     """
     Normalize field values in a JSON array using a normalization map.
     The map can contain direct value mappings and dynamic rules.
     """
-    with open(normalization_map_path, 'r', encoding='utf-8') as f:
-        normalization_map = json.load(f)
-
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
