@@ -80,7 +80,7 @@
   "normalization_map": {
     "accommodation_type": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "agence_immobiliere_citya": "PAID",
         "avenant_bail_chez_cousin": "FREE",
         "chez_famille": "FREE",
@@ -128,7 +128,7 @@
     },
     "cf_interview_quality": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "excellent": "EXCELLENT",
         "good": "GOOD",
         "insuffisant_initialement": "INSUFFICIENT",
@@ -139,7 +139,7 @@
     },
     "cvec_proof": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -147,7 +147,7 @@
     },
     "did_appeal": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -155,7 +155,7 @@
     },
     "entry_level": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "BTS": "BTS",
         "L1": "L1",
         "L2": "L2",
@@ -180,7 +180,7 @@
     },
     "flight_company": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "AIR FRANCE": "AIR_FRANCE",
         "Air France": "AIR_FRANCE",
         "Air Mad": "MADAGASCAR_AIRLINES",
@@ -307,7 +307,7 @@
     },
     "has_blocked_account": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -315,7 +315,7 @@
     },
     "has_edf_bill": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -323,8 +323,8 @@
     },
     "has_family_ties": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
-        "false": "UNSPECIFIED",
+        "null": "UNKNOWN",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -332,7 +332,7 @@
     },
     "has_gmaps_capture": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -340,8 +340,8 @@
     },
     "has_guarantor_fr": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
-        "false": "UNSPECIFIED",
+        "null": "UNKNOWN",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -349,7 +349,7 @@
     },
     "has_home_insurance": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -357,7 +357,7 @@
     },
     "has_job_mg": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -365,15 +365,15 @@
     },
     "has_job_promise_mg": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
-        "true": "UNSPECIFIED"
+        "false": "UNKNOWN",
+        "true": "UNKNOWN"
       },
       "dynamic_rules": [],
       "default": null
     },
     "has_job_promise_repeat": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -381,7 +381,7 @@
     },
     "has_motivation_letter": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -389,7 +389,7 @@
     },
     "has_prev_refusals": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -397,7 +397,7 @@
     },
     "has_property_deed": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -405,7 +405,7 @@
     },
     "has_property_mg": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -413,7 +413,7 @@
     },
     "has_reco_employer": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -421,7 +421,7 @@
     },
     "has_reco_letter": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -429,7 +429,7 @@
     },
     "has_return_letter": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -437,7 +437,7 @@
     },
     "has_study_plan": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -445,7 +445,7 @@
     },
     "ax_notice_fr": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -453,7 +453,7 @@
     },
     "insurance_provider": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "ARO": "ARO",
         "AXA": "AXA",
         "Allianz": "ALLIANZ",
@@ -471,7 +471,7 @@
     },
     "is_minor": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -479,8 +479,8 @@
     },
     "is_private_school": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
-        "false": "UNSPECIFIED",
+        "null": "UNKNOWN",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -488,7 +488,7 @@
     },
     "language_cert": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -496,8 +496,8 @@
     },
     "late_start_date": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
-        "false": "UNSPECIFIED",
+        "null": "UNKNOWN",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -505,7 +505,7 @@
     },
     "outcome": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "approved": "APPROVED",
         "refused": "REFUSED",
         "visa_accepte": "APPROVED",
@@ -526,7 +526,7 @@
     },
     "prior_agreement": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -534,7 +534,7 @@
     },
     "procedure_type": {
       "value_mappings": {
-        "null": null,
+        "null": "UNKNOWN",
         "accompagnateur_etudiant": "MINOR_WITH_ACCOMPANYING_ADULT",
         "accord_cooperation": "COOPERATION_AGREEMENT",
         "campus_art": "CAMPUS_FRANCE_ART_PROGRAM",
@@ -596,7 +596,7 @@
     },
     "resume_studies": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -604,7 +604,7 @@
     },
     "school_type": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "cpge_publique": "CPGE",
         "ecole_art": "SPECIALIZED_SCHOOL",
         "ecole_de_commerce": "BUSINESS_AND_MANAGEMENT_SCHOOL",
@@ -630,7 +630,7 @@
     },
     "self_financed": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -638,20 +638,20 @@
     },
     "tls_service": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
+        "null": "UNKNOWN",
         "false": "STANDARD",
         "true": "PREMIUM",
         "premium": "PREMIUM",
         "standard": "STANDARD",
-        "tls_dedie_accompagnateur": "UNSPECIFIED"
+        "tls_dedie_accompagnateur": "UNKNOWN"
       },
       "dynamic_rules": [],
       "default": null
     },
     "tuition_paid_upfront": {
       "value_mappings": {
-        "null": "UNSPECIFIED",
-        "false": "UNSPECIFIED",
+        "null": "UNKNOWN",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
@@ -659,7 +659,7 @@
     },
     "used_helper": {
       "value_mappings": {
-        "false": "UNSPECIFIED",
+        "false": "UNKNOWN",
         "true": "YES"
       },
       "dynamic_rules": [],
