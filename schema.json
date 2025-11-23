@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reusable Visa Application Data Schema",
+  "description": "Generic yet specific schema for reusable analytics/modeling. No procedure-specific field names.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique UUID for the application",
+      "format": "uuid"
+    },
+    "identity": {
+      "type": "object",
+      "description": "Applicant identity and demographics",
+      "properties": {
+        "age": { "type": "integer", "minimum": 0, "maximum": 120 },
+        "is_minor": { "type": "boolean" },
+        "country_of_origin": { "type": "string" },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "gender": { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"] }
+      },
+      "required": ["age", "is_minor", "country_of_origin"]
+    },
+    "dates": {
+      "type": "object",
+      "description": "Application operation dates",
+      "properties": {
+        "applied": { "type": ["string", "null"], "format": "date" },
+        "decision": { "type": ["string", "null"], "format": "date" },
+        "planned_start": { "type": ["string", "null"], "format": "date" },
+        "planned_departure": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["APPROVED", "REFUSED", "UNKNOWN", "PENDING"]
+    },
+    "outcome_details": {
+      "type": "object",
+      "description": "Refusal or approval details",
+      "properties": {
+        "reason": { "type": ["string", "null"] },
+        "processing_days": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "education": {
+      "type": "object",
+      "description": "Education or skills/qualification block",
+      "properties": {
+        "level": {
+          "type": ["string", "null"],
+          "description": "Applicant's education or job/skill level"
+        },
+        "program_type": {
+          "type": ["string", "null"],
+          "description": "Type of program (general, vocational, etc.)"
+        },
+        "institution_type": {
+          "type": ["string", "null"],
+          "description": "Type of institution or employer"
+        },
+        "years_since_last_qualification": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "is_private": { "type": ["boolean", "null"] },
+        "agreement_present": { "type": ["boolean", "null"] }
+      }
+    },
+    "finance": {
+      "type": "object",
+      "description": "Financial details, sponsors, payments",
+      "properties": {
+        "fees_paid": { "type": ["boolean", "null"] },
+        "payment_amount": { "type": ["number", "null"] },
+        "self_financed": { "type": ["boolean", "null"] },
+        "sponsor_count": { "type": ["integer", "null"], "minimum": 0 },
+        "sponsor_locations": { "type": "array", "items": { "type": "string" } },
+        "guarantee_total": { "type": ["number", "null"] }
+      }
+    },
+    "accommodation": {
+      "type": "object",
+      "description": "Accommodation details",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "cost": { "type": ["number", "null"] },
+        "distance_to_target": { "type": ["number", "null"] },
+        "proofs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "guarantors": {
+      "type": "object",
+      "description": "Guarantor and sponsor information",
+      "properties": {
+        "count": { "type": ["integer", "null"] },
+        "primary": { "type": ["string", "null"] },
+        "relationship": { "type": ["string", "null"] }
+      }
+    },
+    "documents": {
+      "type": "object",
+      "description": "Submitted document flags (CV, motivation, language, proof, etc.)",
+      "properties": {
+        "motivation_present": { "type": ["boolean", "null"] },
+        "letter_present": { "type": ["boolean", "null"] },
+        "plan_present": { "type": ["boolean", "null"] },
+        "language_evidence_present": { "type": ["boolean", "null"] },
+        "insurance_present": { "type": ["boolean", "null"] }
+      }
+    },
+    "service_used": {
+      "type": "object",
+      "description": "External/processing services (eg: agencies, online portals)",
+      "properties": {
+        "agency": { "type": ["string", "null"] },
+        "agency_type": { "type": ["string", "null"] }
+      }
+    },
+    "testimonials": {
+      "type": "array",
+      "description": "Freeform testimonials, with optional extracted structure",
+      "items": {
+        "type": "object",
+        "properties": {
+          "raw_text": { "type": "string" },
+          "sentiment": {
+            "type": ["string", "null"],
+            "enum": ["positive", "neutral", "negative", null]
+          },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "author": { "type": ["string", "null"] }
+        },
+        "required": ["raw_text"]
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Extracted positive tags for analytics"
+    },
+    "meta": {
+      "type": "object",
+      "description": "System fields for ingestion and provenance",
+      "properties": {
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "required": ["id", "identity", "outcome"]
+}

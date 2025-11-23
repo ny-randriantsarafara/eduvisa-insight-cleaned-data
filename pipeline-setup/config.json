@@ -78,6 +78,16 @@
     "years_since_diploma"
   ],
   "normalization_map": {
+    "certification_type": {
+      "value_mappings": {},
+      "dynamic_rules": [],
+      "default": null
+    },
+    "level": {
+      "value_mappings": {},
+      "dynamic_rules": [],
+      "default": null
+    },
     "accommodation_type": {
       "value_mappings": {
         "null": "UNKNOWN",
