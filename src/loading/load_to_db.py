@@ -26,6 +26,11 @@ def load_to_mongodb(file_path, db_name, collection_name, mongo_uri):
         db = client[db_name]
         collection = db[collection_name]
 
+        # Clean the collection before inserting new data
+        print(f"Cleaning collection: {collection_name}...")
+        collection.delete_many({})
+        print("Collection cleaned.")
+
         # Check if the file exists
         if not os.path.exists(file_path):
             print(f"Error: File not found at {file_path}")
@@ -35,30 +40,16 @@ def load_to_mongodb(file_path, db_name, collection_name, mongo_uri):
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        # Insert or upsert data into the collection
+        # Insert data into the collection
         if isinstance(data, list):
             if data:
-                upserted_count = 0
-                for doc in data:
-                    # Use 'id' as the unique key for upsert
-                    filter_query = {"id": doc["id"]} if "id" in doc else doc
-                    result = collection.replace_one(filter_query, doc, upsert=True)
-                    if result.upserted_id:
-                        print(f"Upserted document with id: {doc.get('id')}")
-                        upserted_count += 1
-                    else:
-                        print(f"Updated existing document with id: {doc.get('id')}")
-                print(f"Successfully upserted {upserted_count} new documents into '{collection_name}'.")
+                result = collection.insert_many(data)
+                print(f"Successfully inserted {len(result.inserted_ids)} documents into '{collection_name}'.")
             else:
-                print("JSON file is empty. No data upserted.")
+                print("JSON file is empty. No data inserted.")
         else:
-            filter_query = {"id": data["id"]} if "id" in data else data
-            result = collection.replace_one(filter_query, data, upsert=True)
-            if result.upserted_id:
-                print(f"Upserted document with id: {data.get('id')}")
-            else:
-                print(f"Updated existing document with id: {data.get('id')}")
-            print(f"Successfully upserted 1 document into '{collection_name}'.")
+            result = collection.insert_one(data)
+            print(f"Successfully inserted 1 document with id: {result.inserted_id} into '{collection_name}'.")
 
     except Exception as e:
         print(f"An error occurred: {e}")
